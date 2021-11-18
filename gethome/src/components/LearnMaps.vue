@@ -2,11 +2,10 @@
     <div>
         <h1>Stacy's Location</h1>
     <!--Display Map -->
-
         <GmapMap
         :center='center'
         :zoom='12'
-        style='width:100%;  height: 400px;'
+        style='width:100%;  height: 500px;'
         >
         <GmapMarker
         :key="index"
@@ -23,19 +22,23 @@ import { getDatabase, ref, onValue} from "firebase/database";
 import { database } from '../firebase';
 const db = getDatabase();
 //import {getDocs,collection,addDoc,doc,setDoc,deleteDoc,onSnapshot} from "firebase/firestore"
+
 export default {
     name : "LearnMaps",
     data() {
     return {
       center: { lat: 36.7659, lng: 1.3923 },
-      currentPlace: { lat: 36.7659, lng: 1.3923  },
+      currentPlace: { lat: 36.7659, lng: 1.3923 },
       markers: [],
+      lati: 0,
+      longi: 0,
       places: []
     }
     },
     mounted() {
     // geolocation 
-    //this.geolocate();
+    
+
     //this.readLocation();
     //this.setPlace ();  
     this.getFirebasertd("coordinates");
@@ -44,16 +47,22 @@ export default {
     
   },
   created (){
-    this.getFirebasertd("coordinates");
-    this.addMarker ();
+    //this.getFirebasertd("coordinates");
+    //this.addMarker ();
+    //this.setCentre();
+    //this.geolocate();
   },
   methods: {
+    //setPlace() {
+      //this.currentPlace =  { lat: 36.7659, lng: 1.3923 };
+    //},
     //readLocation: function(){
       //db.collection('Locations') 
       //.get()
       //.then(snapshot=> {
         //snapshot.foreach( doc => {
         //console.log(doc.data());
+
       //})
       //});
       
@@ -62,29 +71,45 @@ export default {
       //console.log(doc.id, '=>', doc.data());
       //});
     //set new location
+   // setCentre (){
+     // this.center = {lat: data.lat,lng: data.lng};
+    //},
     getFirebasertd: function(item){
     // const db = getDatabase()
     const getChildData = ref(database,item)
       onValue(getChildData,(snapshot)=>{
           const data = snapshot.val();
-          this.currentPlace= {lat: data.lat,lng: data.lng};
-          this.center= {lat: data.lat,lng: data.lng};
-          console.log(data);
+          this.lati = data.lng;
+          this.longi = data.lat;
+          this.currentPlace.lat = this.lati;
+          this.currentPlace.lng = this.longi;
+          this.center.lat = this.lati;
+          this.center.lng = this. longi;
+          //this.center= {lat: data.lat,lng: data.lng};
+          //this.currentPlace= {lat: data.lat,lng: data.lng};
+          console.log(this.lati);
+          console.log(this.longi);
+          //console.log(this.center);
         return data;
     })},
+
     
     //Add markers to the map
     addMarker: function() {
-      if (this.currentPlace) {
+      console.log(this.longi);
+      this.currentPlace =  { lat: 36.7659, lng: 1.3923 };
+      //if (this.currentPlace) {
         const marker = {
           lat: this.currentPlace.lat,
           lng: this.currentPlace.lng
         };
+        console.log(this.currentPlace)
         this.markers.push({ position: marker });
         this.places.push(this.currentPlace);
         this.center = marker;
-        this.currentPlace = null;
-      }
+        console.log(this.center);
+        
+     // }
     },
     //Geolocation to browser location
     geolocate: function() {
